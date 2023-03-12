@@ -8,13 +8,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Lato';
+    font-family: 'Lato', sans-serif;
     height: 100vh;
 }
 
 .container {
-    width: 40%;
-    height: 600px;
+    width: 50%;
     border-radius: 10px;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
     display: flex;
@@ -26,12 +25,12 @@ body {
     width: 94%;
     margin: 0 auto;
     padding: 2rem;
-    font-size: 1.2rem;
     text-align: center;
 }
 
 .container .responses {
     width: 100%;
+    margin: 1rem 0;
 }
 
 .container .responses .responses-list {
@@ -41,7 +40,6 @@ body {
 }
 
 .responses .responses-list .response-item {
-    font-size: 1.8rem;
     margin-bottom: 1.2rem;
 }
 
@@ -57,13 +55,80 @@ body {
 
 .container .button-container button {
     width: 100%;
-    padding: 2rem 3rem;
+    padding: 1rem 2rem;
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     border: none;
     background-color: blueviolet;
     color: #FFF;
     cursor: pointer;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+}
+
+.alert {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 2px solid red;
+    padding: 1rem  2rem;
+    display: flex;
+    justify-content: space-between;
+    transform: scale(0);
+    font-size: 1.1rem;
+    animation-delay: .6s;
+    animation-name: appear;
+    animation-duration: .5s;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+.alert .text-icon i {
+    color: red;
+    margin-right: 0.3rem;
+}
+
+.alert .icon-text .text {
+    color: black;
+}
+
+.alert .close {
+    color: red;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+@keyframes appear {
+    0% {
+        transform: scale(0);
+    } 40% {
+        transform: scale(0.3);
+    } 80% {
+        transform: scale(0.7);
+    } 100% {
+        transform: scale(1);
+    }
+}
+
+body > i {
+    display: block;
+    font-size: 3.6rem;
+    color: red;
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: appearIcon .5s ease forwards;
+
+}
+
+@keyframes appearIcon {
+    0% {
+        top: -100%;
+    } 80% {
+        top: 5%;
+    } 100% {
+        top: 5%;
+    }
 }
