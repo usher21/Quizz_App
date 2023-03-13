@@ -1,18 +1,21 @@
-class QuestionManager {
+export class QuestionManager {
     
-    #questionContainer
+    #questionContainer = null
     #questionTitle = null
     #responseItem = null
     #responseList = null
+    #button = null
     
     constructor(question) {
         this.createQuestionContainer(question)
-
     }
 
-    createQuestionContainer() {
+    createQuestionContainer(question, buttonContent) {
         this.questionContainer = createElement('div', { class: 'container'})
-        this.#questionList = this.createResponseList()
+        this.#questionTitle = this.createTitle(question.question)
+        this.#questionList = this.createResponseList(question.answers)
+        this.#button = this.createNextButton(buttonContent)
+        this.appendElementsTo(this.#questionContainer)
     }
 
     createTitle(title) {
@@ -34,14 +37,14 @@ class QuestionManager {
         return responseItem
     }
 
-    createResponseList(question) {
+    createResponseList(answers) {
         const responseContainer = createElement('div', { class: 'responses'})
         const responseList = createElement('ul', { class: 'responses-list'})
 
         let letterCode = 97
 
-        for (const response of question.responses) {
-            const responseItem = this.createResponseItem(response, letterCode++)
+        for (const answer of answers) {
+            const responseItem = this.createResponseItem(answer, letterCode++)
             responseList.append(responseItem)
         }
 
@@ -55,6 +58,12 @@ class QuestionManager {
         const button = createElement('div', { class: 'next' }, content)
         buttonContainer.append(button)
         return buttonContainer
+    }
+
+    appendElementsTo(parentElement) {
+        parentElement.append(this.#questionTitle)
+        parentElement.append(this.#responseList)
+        parentElement.append(this.#button)
     }
 }
 

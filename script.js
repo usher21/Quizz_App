@@ -1,42 +1,34 @@
 let questions = [
     {
         question: "Quel est le Meilleur Language de Programmation",
-        responses: ["Java", "C", "Python", "JavaScript"],
+        answers: ["Java", "C", "Python", "JavaScript"],
         correct: "d"
     },
     {
         question: "Quel est le plus gros animal vivant",
-        responses: ["Dauphin", "Baleine bleue", "ÉlÉphant d'Afrique", "Girafe"],
+        answers: ["Dauphin", "Baleine bleue", "ÉlÉphant d'Afrique", "Girafe"],
         correct: "b"
     },
     {
         question: "Quel est l'animal le plus rapide au monde",
-        responses: ["Antilocapre", "Martinet Cafre", "Faucon pèlerin", "Harle huppé"],
+        answers: ["Antilocapre", "Martinet Cafre", "Faucon pèlerin", "Harle huppé"],
         correct: "c"
     },
     {
         question: "Quelle propriété permettrait de superposer des élément HTML en CSS",
-        responses: ["position", "display", "z-index", "flex"],
+        answers: ["position", "display", "z-index", "flex"],
         correct: "c"
     }, {
         question: "Quelle propriété appliquée sur un élément permet de modifier l'ordre des éléments en les réagençant sans modifier le HTML",
-        responses: [
-            "flex-direction",
-            "align-items",
-            "order",
-            "flex"
-        ],
+        answers: ["flex-direction", "align-items", "order", "flex"],
         correct: "a"
     },
 ]
 
 const title = document.querySelector('.title h3')
 const header = document.querySelector('.title')
-const responses = document.querySelectorAll('input[type="radio"]')
-const responsesContainer = document.querySelector('.responses')
-const label = document.querySelectorAll('label')
 const nextButton = document.querySelector('.next')
-const container = document.querySelector('.container')
+const answerList = document.querySelector('.container .responses-list')
 
 startQuiz()
 
@@ -44,67 +36,118 @@ let index = 0
 let correctAnswer = 0
 
 nextButton.addEventListener('click', () => {
-    if (getComputedStyle(responsesContainer).display == 'none') {
-        responsesContainer.style.display = 'block'
-        nextButton.textContent = 'Suivant'
+    if (!hasChilds()) {
         generateQuestion()
-        return
-    }
-    let responsesChecked = Array.from(responses).filter(radio => radio.checked)
-    if (responsesChecked.length == 0) {
-        alert('Veuillez séléctionné une réponse !')
+        unCheckAnswer()
+        nextButton.textContent = 'Suivant'
         return
     }
 
-    correct(responsesChecked[0])
+    if (!isCheckedAnswer()) {
+        alert('Veuillez sélectionner une réponse !')
+        return
+    }
+
+    let checkedAnswer = getCheckedAnswer()
+    if (isCorrectAnswer(checkedAnswer[0]))
+        correctAnswer++
+
     index++
 
     if (index < questions.length) {
+        answerList.innerHTML = ''
         generateQuestion()
         unCheckAnswer()
     }
 
-    if (index == questions.length) {
-        nextButton.textContent = 'Rejouer'
-        responsesContainer.style.display = 'none'
-        title.textContent = `Vous avez trouvé ${correctAnswer}/${questions.length} questions.`
-        index = 0
-        correctAnswer = 0
-    }
+    if (index == questions.length)
+        endQuiz()
 })
 
-function generateQuestion() {
-    title.textContent = questions[index].question + ' ?'
-    for (let i = 0; i < questions[index].responses.length; i++) {
-        label[i].textContent = questions[index].responses[i]
-    }
-    
-}
+/*--------------------------------------------------------------------------------------------------------------*/
 
 function startQuiz() {
     nextButton.textContent = 'Commencer'
-    responsesContainer.style.display = 'none'
     title.textContent = `Commencer le Quizz`
     unCheckAnswer()
 }
 
+function endQuiz() {
+    nextButton.textContent = 'Rejouer'
+    title.textContent = `Vous avez trouvé ${correctAnswer}/${questions.length} questions.`
+    resetQuiz()
+}
+
+function resetQuiz() {
+    answerList.innerHTML = ''
+    index = 0
+    correctAnswer = 0
+}
+
+/*--------------------------------------------------------------------------------------------------------------*/
+
+function getAnswers() {
+    return document.querySelectorAll('input[type="radio"]')
+}
+
+function isCheckedAnswer() {
+    return Array
+        .from(getAnswers())
+        .filter(answer => answer.checked)
+        .length != 0
+}
+
+function hasChilds() {
+    console.log(answerList);
+    return answerList.children.length != 0
+}
+
+function getCheckedAnswer() {
+    return Array
+        .from(getAnswers())
+        .filter(checkedElement => checkedElement.checked)
+}
+
+/*--------------------------------------------------------------------------------------------------------------*/
+
+function generateQuestion() {
+    title.textContent = questions[index].question + ' ?'
+    let letterCode = 97
+    for (let i = 0; i < questions[index].answers.length; i++) {
+        let answerItem = createResponseItem(questions[index].answers[i], String.fromCharCode(letterCode))
+        answerList.append(answerItem)
+        letterCode++
+    }
+}
+
 function unCheckAnswer() {
-    responses.forEach(answer => answer.checked = false )
+    getAnswers().forEach(answer => answer.checked = false)
 }
 
-function correct(responseChecked) {
-    if (responseChecked.id == questions[index].correct) {
-        correctAnswer++
-    }
+function isCorrectAnswer(responseChecked) {
+    return responseChecked.id == questions[index].correct
 }
 
-function hasChild() {
-    let children = container.children
-    let hasChild = false
-    for (let i = 0; i < children.length; i++) {
-        if (children[i].classList.contains('responses')) {
-            hasChild = true
-        }
-    }
-    return hasChild
+/*--------------------------------------------------------------------------------------------------------------*/
+
+function createResponseItem(responseText, id) {
+    const responseItem = createElement('li', { class: 'response-item' })
+    const inputRadio = createElement('input', { 'type': "radio", 'name': "response", 'id': id })
+    const labelForInput = createElement('label', { 'for': id }, responseText)
+
+    responseItem.append(inputRadio)
+    responseItem.append(labelForInput)
+
+    return responseItem
 }
+
+function createElement(tagName, attributs = {}, content = '') {
+    const element = document.createElement(tagName)
+    for (const attribut in attributs) {
+        element.setAttribute(attribut, attributs[attribut])
+    }
+    element.textContent = content
+    return element
+}
+
+/*--------------------------------------------------------------------------------------------------------------*/
